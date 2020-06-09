@@ -27,7 +27,7 @@ app.use(async (ctx, next) => {
 
 const router = new Router({prefix: '/api'});
 
-router.post('/login', login);
+router.post('/login', handleMongooseValidationError, login);
 
 router.get('/oauth/:provider', oauth);
 router.post('/oauth_callback', handleMongooseValidationError, oauthCallback);
