@@ -10,6 +10,7 @@ server.on('request', (req, res) => {
   if (pathname.split('/').length > 1) {
     res.statusCode = 400;
     res.end('Не поддерживаются вложенные пути');
+    return;
   }
   const filepath = path.join(__dirname, 'files', pathname);
 

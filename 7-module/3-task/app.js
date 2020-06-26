@@ -33,6 +33,22 @@ app.use((ctx, next) => {
   ctx.login = async function(user) {
     const token = uuid();
 
+    try {
+      let userSession = await Session.findOne({token: token}).populate('user');
+      if (!userSession) {
+        userSession = await Session.create({
+          token: token,
+          lastVisit: new Date(),
+          user: user,
+        });
+        ctx.user = user;
+      }
+      // ctx.body = {token: (userSession) ? userSession.token: token};
+    } catch (e) {
+      console.log({error: e});
+      throw e;
+    }
+
     return token;
   };
 
@@ -63,7 +79,7 @@ const fs = require('fs');
 const index = fs.readFileSync(path.join(__dirname, 'public/index.html'));
 app.use(async (ctx) => {
   if (ctx.url.startsWith('/api') || ctx.method !== 'GET') return;
-  
+
   ctx.set('content-type', 'text/html');
   ctx.body = index;
 });
